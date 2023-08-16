@@ -1,27 +1,74 @@
-# AngularJest
+# Instalando e Configurando o Jest no Angular
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.0.
+Este tutorial fornecerá instruções passo a passo para instalar e configurar o Jest como framework de testes unitários em
+um projeto Angular
 
-## Development server
+> Esse tutorial utiliza o suporte experimental do Jest para versão 16 do Angular. Optamos por apresentar o framework de testes Jest devido à sua capacidade de executar testes sem a necessidade de um navegador real, proporcionando vantagens significativas, especialmente em ambientes de Integração Contínua (CI). Isso simplifica e acelera a execução dos testes unitários em projetos Angular.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+### Passo 1: Remover Dependências Antigas
 
-## Code scaffolding
+Remova as dependências antigas relacionadas aos testes Jasmine e Karma:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```bash
+yarn remove @types/jasmine jasmine-core karma karma-chrome-launcher karma-coverage karma-jasmine karma-jasmine-html-reporter
+```
 
-## Build
+> Verificar se existe alguma outra dependência relacionada aos testes Jasmine e Karma e remova-a também.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Passo 2: Adicionar o Jest e Definições de Tipo
 
-## Running unit tests
+Adicione o Jest e suas definições de tipo ao projeto:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```bash 
+yarn add jest @types/jest -D
+```
 
-## Running end-to-end tests
+### Passo 3: Atualizar tsconfig.spec.json
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Atualize o trecho do arquivo tsconfig.spec.json para incluir as configurações do Jest:
 
-## Further help
+```json
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/spec",
+    "types": [
+      "jest"
+    ]
+  },
+  "include": [
+    "src/**/*.spec.ts",
+    "src/**/*.d.ts"
+  ]
+}
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### Passo 4: Atualizar angular.json
+
+Atualize o arquivo `angular.json` para configurar o Jest como builder de testes:
+
+```json
+{
+  "projects": {
+    "my-app": {
+      "architect": {
+        "test": {
+          "builder": "@angular-devkit/build-angular:jest",
+          "options": {
+            "tsConfig": "tsconfig.spec.json",
+            "polyfills": ["zone.js", "zone.js/testing"]
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+### Rodando os Testes
+
+Execute os testes unitários com o comando:
+
+```bash
+ng test
+```
